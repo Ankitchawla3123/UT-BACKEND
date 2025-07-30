@@ -1,0 +1,31 @@
+{
+  "name": "ut-backend",
+  "version": "1.0.0",
+  "description": "Ultimate Tactics Backend",
+  "homepage": "https://github.com/Ankitchawla3123/UT-BACKEND#readme",
+  "bugs": {
+    "url": "https://github.com/Ankitchawla3123/UT-BACKEND/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ankitchawla3123/UT-BACKEND.git"
+  },
+  "license": "ISC",
+  "author": "SPY_D",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.16.5",
+    "mongoose-aggregate-paginate-v2": "^1.1.4",
+    "multer": "^2.0.2"
+  }
+}
