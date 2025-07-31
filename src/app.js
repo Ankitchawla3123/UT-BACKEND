@@ -16,7 +16,8 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 import userRouter from "./routes/user.routes.js";
-
+import boardRouter from "./routes/board.routes.js";
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/board", boardRouter);
 
 export { app };

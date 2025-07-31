@@ -4,7 +4,7 @@ const lineSchema = new Schema(
   {
     metadata: {
       type: {
-        type: { type: String },
+        type: String,
       },
       name: { type: String },
     },
@@ -30,7 +30,7 @@ const playerSchema = new Schema(
     name: { type: String },
     metadata: {
       type: {
-        type: { type: String },
+        type: String,
       },
       name: { type: String },
     },
@@ -45,7 +45,7 @@ const polygonSchema = new Schema(
   {
     metadata: {
       type: {
-        type: { type: String },
+        type: String,
       },
       name: { type: String },
     },
@@ -63,9 +63,20 @@ const boardSchema = new Schema(
       ref: "User",
       required: true,
     },
-    lines: [lineSchema],
-    players: [playerSchema],
-    polygons: [polygonSchema],
+    lines: {
+      type: [lineSchema],
+      default: [],
+    },
+
+    players: {
+      type: [playerSchema],
+      default: [],
+    },
+
+    polygons: {
+      type: [polygonSchema],
+      default: [],
+    },
   },
   { timestamps: true }
 );
