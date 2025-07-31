@@ -30,6 +30,14 @@ const userSchema = new Schema(
     refreshToken: {
       type: String,
     },
+    boards: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Board",
+        },
+      ],
+    },
   },
   { timestamps: true }
 );

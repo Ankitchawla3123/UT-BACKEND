@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { User } from "./user.models.js";
 
 const lineSchema = new Schema(
   {
@@ -80,5 +81,23 @@ const boardSchema = new Schema(
   },
   { timestamps: true }
 );
+
+boardSchema.post("save", async (doc, next) => {
+  const user = await User.findById(doc.owner);
+  if (user) {
+    user.boards.push(doc._id);
+    await user.save();
+  }
+  next();
+});
+
+boardSchema.post("findOneAndDelete", async function (doc, next) {
+  if (doc?.owner) {
+    await User.findByIdAndUpdate(doc.owner, {
+      $pull: { boards: doc._id },
+    });
+  }
+  next();
+});
 
 export const Board = mongoose.model("Board", boardSchema);
