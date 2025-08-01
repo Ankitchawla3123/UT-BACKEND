@@ -23,4 +23,6 @@ boardRouter
 
 boardRouter.route("/:boardId/share").post(verifyJWT, verifyBoard, shareBoard);
 boardRouter.route("/sharedboard/:shareId").get(verifyJWT, accessSharedBoard);
+
+
 export default boardRouter;
