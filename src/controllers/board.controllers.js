@@ -3,6 +3,7 @@ import { User } from "../models/user.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { Shareboard } from "../models/share.models.js";
 
 const SaveBoard = asyncHandler(async (req, res) => {
   const { lines = [], polygons = [], players = [] } = req.body;
@@ -87,4 +88,33 @@ const deleteBoard = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, {}, "Deleted successfully"));
 });
 
-export { SaveBoard, updateBoard, deleteBoard };
+const shareBoard = asyncHandler(async (req, res) => {
+  const board = req.board;
+  const expiry = req.body.expiry;
+
+  if (!board) {
+    throw new ApiError(404, "Board not found");
+  }
+
+  const expiryTime = new Date(Date.now() + parseInt(expiry) * 60 * 60 * 1000);
+
+  const shared = await Shareboard.create({
+    owner: board.owner,
+    lines: board.lines,
+    players: board.players,
+    polygons: board.polygons,
+    expiresAt: expiryTime,
+  });
+
+  if (!shared) {
+    throw new ApiError(500, "Unable to share board");
+  }
+
+  return res
+    .status(201)
+    .json(
+      new ApiResponse(201, { shareId: shared._id }, "Board shared successfully")
+    );
+});
+
+export { SaveBoard, updateBoard, deleteBoard, shareBoard };
