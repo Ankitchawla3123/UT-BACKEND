@@ -2,7 +2,6 @@ import mongoose, { Schema } from "mongoose";
 import { ApiError } from "../utils/ApiError.js";
 import { mailSender } from "../utils/mailSender.js";
 
-mailSender;
 const otpSchema = Schema({
   email: {
     type: String,
