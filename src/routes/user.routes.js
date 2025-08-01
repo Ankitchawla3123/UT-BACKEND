@@ -3,6 +3,7 @@ import { sendOtp } from "../controllers/opt.controllers.js";
 import {
   loginUser,
   logoutUser,
+  refreshAccessToken,
   registerUser,
 } from "../controllers/user.controllers.js";
 import { verifyJWT } from "../middlewares/auth.middlewares.js";
@@ -18,5 +19,7 @@ userRouter.route("/send-otp").post(sendOtp);
 userRouter.route("/register").post(registerUser);
 userRouter.route("/login").post(loginUser);
 userRouter.route("/logout").post(verifyJWT, logoutUser);
+
+userRouter.route("/refresh-token").post(refreshAccessToken);
 
 export default userRouter;
