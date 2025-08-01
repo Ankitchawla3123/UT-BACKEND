@@ -4,6 +4,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { Shareboard } from "../models/share.models.js";
+import mongoose from "mongoose";
 
 const SaveBoard = asyncHandler(async (req, res) => {
   const { lines = [], polygons = [], players = [] } = req.body;
@@ -98,7 +99,32 @@ const shareBoard = asyncHandler(async (req, res) => {
 
   const expiryTime = new Date(Date.now() + parseInt(expiry) * 60 * 60 * 1000);
 
+  const existing = await Shareboard.findOne({ ogBoardId: board._id });
+
+  if (existing) {
+    existing.lines = board.lines;
+    existing.players = board.players;
+    existing.polygons = board.polygons;
+    existing.expiresAt = expiryTime;
+
+    const updatedShare = await existing.save();
+
+    if (!updatedShare) {
+      throw new ApiError(500, "Failed to update shared board");
+    }
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { shareId: updatedShare._id },
+          "Shareboard updated"
+        )
+      );
+  }
+
   const shared = await Shareboard.create({
+    ogBoardId: board._id,
     owner: board.owner,
     lines: board.lines,
     players: board.players,
@@ -117,4 +143,53 @@ const shareBoard = asyncHandler(async (req, res) => {
     );
 });
 
-export { SaveBoard, updateBoard, deleteBoard, shareBoard };
+const accessSharedBoard = asyncHandler(async (req, res) => {
+  const { shareId } = req.params;
+  if (!shareId) {
+    throw new ApiError(400, "Share ID is required");
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(shareId)) {
+    throw new ApiError(400, "Invalid Share ID format");
+  }
+  const sharedBoard =
+    await Shareboard.findById(shareId).select("-owner -ogBoardId");
+
+  if (!sharedBoard) {
+    throw new ApiError(404, "Shared board not found or expired");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, sharedBoard, "Shared board fetched successfully")
+    );
+});
+
+const accessBoard = asyncHandler(async (req, res) => {
+  const boardId = req.board?._id;
+  if (!boardId) {
+    throw new ApiError(400, "Board ID is required");
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(boardId)) {
+    throw new ApiError(400, "Invalid board ID format");
+  }
+
+  const board = await Board.findById(boardId).select("-owner");
+  if (!board) {
+    throw new ApiError(404, "Board Doesn't exist");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, board, "Board Fetched sucessfully"));
+});
+export {
+  SaveBoard,
+  updateBoard,
+  deleteBoard,
+  shareBoard,
+  accessSharedBoard,
+  accessBoard,
+};

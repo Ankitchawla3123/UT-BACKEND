@@ -57,6 +57,11 @@ const polygonSchema = new Schema(
 );
 
 const SharedBoardSchema = new Schema({
+  ogBoardId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Board",
+    required: true,
+  },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -84,6 +89,5 @@ const SharedBoardSchema = new Schema({
 
 //TTL (Time to live)
 SharedBoardSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
-
 
 export const Shareboard = mongoose.model("Shareboard", SharedBoardSchema);
