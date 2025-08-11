@@ -16,13 +16,13 @@ boardRouter
   .route("/:boardId/update")
   .patch(verifyJWT, verifyBoard, updateBoard);
 
+boardRouter.route("/:boardId/share").post(verifyJWT, verifyBoard, shareBoard);
+
 boardRouter
   .route("/:boardId")
   .delete(verifyJWT, verifyBoard, deleteBoard)
   .get(verifyJWT, verifyBoard, accessBoard);
 
-boardRouter.route("/:boardId/share").post(verifyJWT, verifyBoard, shareBoard);
 boardRouter.route("/sharedboard/:shareId").get(verifyJWT, accessSharedBoard);
-
 
 export default boardRouter;
